@@ -1,11 +1,33 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import MessageBubble from "./MessageBubble";
 
 export default function ChatArea() {
-  const [message, setMessage] = useState("");
+  const [message,setMessage]=useState<string>("");
+  const [messages, setMessages] = useState<string[]>([]);
+  const wsRef = useRef<WebSocket|null>(null);
 
-  const handleSend = async () =>{
-    
-  }
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:8080");
+    ws.onmessage = (event) => {
+      setMessages(prev=>[...prev, event.data]);
+    };
+    wsRef.current=ws;
+    return ()=>{
+      ws.close();
+    }
+  },[]);
+
+  const handleSend = (e:any) => {
+    e.preventDefault();
+    const sendableObj = JSON.stringify({
+      type:"chat",
+      payload:{
+        msg:message
+      }
+    });
+    setMessage("");
+    wsRef.current?.send(sendableObj);
+  };
 
   return (
     <div>
@@ -28,7 +50,9 @@ export default function ChatArea() {
         </div>
 
         <div className="p-4 h-[calc(100%-110px)]">
-          {/* Messages will go here */}
+          {messages.map((message) => (
+            <MessageBubble msg={message} />
+          ))}
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 flex items-end gap-2 px-3 py-3 bg-black/40 backdrop-blur-md border-t border-white/10 rounded-b-2xl">
@@ -36,9 +60,17 @@ export default function ChatArea() {
             value={message}
             className="flex-1 min-w-0 resize-none h-10 scrollbar-hide bg-zinc-800/80 text-white px-4 py-2 rounded-3xl focus:outline-none focus:ring-2 focus:ring-green-500/70"
             placeholder="Enter message..."
+            onKeyDown={(e)=>{
+              if(e.key==="Enter" && e.shiftKey){
+                handleSend(e);
+              }
+            }}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <button onClick={handleSend} className="shrink-0 h-10 bg-green-500 text-black font-semibold px-4 py-2 rounded-full cursor-pointer hover:bg-green-600 active:scale-95 transition-all">
+          <button
+            onClick={handleSend}
+            className="shrink-0 h-10 bg-green-500 text-black font-semibold px-4 py-2 rounded-full cursor-pointer hover:bg-green-600 active:scale-95 transition-all"
+          >
             Send
           </button>
         </div>
