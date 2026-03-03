@@ -1,17 +1,21 @@
 import { Send, LogOut, Copy, Hash } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import ChatBubble from "./ChatBubble";
 
 export default function ChatArea({
   roomId,
   name,
-  onLeave
+  onLeave,
 }: {
   roomId: string;
   name: string;
-  onLeave:()=>void
+  onLeave: () => void;
 }) {
   const [currentActive, setCurrentActive] = useState(0);
-  const [userMessage,setUserMessage] = useState("");
+  const [usersList, setUsersList] = useState<string[]>([]);
+  const [userMessage, setUserMessage] = useState("");
+  const [messages, setMessages] = useState<any[]>([]);
+  const socketRef = useRef<WebSocket | null>(null);
 
   const [toast, setToast] = useState<{
     message: string;
@@ -28,6 +32,51 @@ export default function ChatArea({
     setTimeout(() => setToast((prev) => ({ ...prev, show: false })), 4000);
   };
 
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:8080");
+    socketRef.current = socket;
+
+    socket.onopen = () => {
+      socket.send(
+        JSON.stringify({
+          type: "join",
+          payload: { roomId, name },
+        }),
+      );
+    };
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.type === "system") {
+        setCurrentActive(data.payload.count);
+        setUsersList(data.payload.users || []);
+      }
+
+      if (data.type === "chat") {
+        setMessages((prev) => [...prev, data.payload]);
+      }
+    };
+
+    return () => {
+      socket.close();
+    };
+  }, [roomId, name]);
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userMessage.trim() || !socketRef.current) return;
+
+    socketRef.current.send(
+      JSON.stringify({
+        type: "chat",
+        payload: { message: userMessage },
+      }),
+    );
+
+    setUserMessage("");
+  };
+
   const handleInviteCopy = async () => {
     try {
       await navigator.clipboard.writeText(roomId);
@@ -39,15 +88,18 @@ export default function ChatArea({
 
   return (
     <div className="flex h-screen w-full bg-black text-white font-sans overflow-hidden relative">
-
       <div
         className={`fixed bottom-8 right-8 z-50 transition-all duration-500 transform ${
-          toast.show ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0 pointer-events-none"
+          toast.show
+            ? "translate-y-0 opacity-100"
+            : "translate-y-12 opacity-0 pointer-events-none"
         }`}
       >
         <div
           className={`bg-zinc-900 border ${
-            toast.type === "success" ? "border-green-500/50" : "border-red-500/50"
+            toast.type === "success"
+              ? "border-green-500/50"
+              : "border-red-500/50"
           } p-4 rounded-2xl shadow-2xl flex items-center gap-3 min-w-[320px] backdrop-blur-xl`}
         >
           <div className="flex-1">
@@ -77,7 +129,7 @@ export default function ChatArea({
             Active Now — {currentActive}
           </div>
 
-          {["Sarah_Dev", name, "Quantum_Cat"].map((user) => (
+          {usersList.map((user) => (
             <div
               key={user}
               className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition-colors group cursor-default"
@@ -127,29 +179,47 @@ export default function ChatArea({
           </button>
         </header>
 
-        {/* --- MESSAGE STREAM --- */}
         <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8">
-          {/* Map your ChatBubbles here. Example:
-            {messages.map((msg) => (
-              <ChatBubble key={msg.id} {...msg} isSelf={msg.sender === name} />
-            ))}
-          */}
+          {messages.map((msg, index) => (
+            <ChatBubble
+              key={index}
+              sender={msg.name}
+              message={msg.message}
+              time={msg.time}
+              isSelf={msg.name === name}
+            />
+          ))}
         </div>
 
-        {/* --- INPUT FOOTER --- */}
         <footer className="p-6 md:p-10 bg-linear-to-t from-black to-transparent">
-          <div className="max-w-4xl mx-auto relative flex items-center gap-3">
-            <input
-              type="text"
+          <form
+            onSubmit={handleSendMessage}
+            className="max-w-4xl mx-auto relative flex items-end gap-3"
+          >
+            <textarea
+              rows={1}
               value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
+              onChange={(e) => {
+                setUserMessage(e.target.value);
+                e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage(e);
+                }
+              }}
               placeholder={`Message as ${name}...`}
-              className="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl py-5 px-6 text-white placeholder:text-zinc-600 focus:outline-none focus:border-green-500/50 transition-all shadow-2xl"
+              className="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl py-4 px-6 text-white placeholder:text-zinc-600 focus:outline-none focus:border-green-500/50 transition-all shadow-2xl resize-none overflow-hidden min-h-15 max-h-50"
             />
-            <button className="bg-white hover:bg-green-500 text-black p-4 rounded-2xl transition-all active:scale-95 group">
+            <button
+              type="submit"
+              className="bg-white hover:bg-green-500 text-black p-4 rounded-2xl transition-all active:scale-95 group mb-1"
+            >
               <Send className="w-6 h-6 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </button>
-          </div>
+          </form>
         </footer>
       </section>
     </div>
