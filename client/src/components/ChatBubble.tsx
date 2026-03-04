@@ -5,9 +5,16 @@ interface ChatBubbleProps {
   isSelf: boolean;
 }
 
-export default function ChatBubble({ sender, message, time, isSelf }: ChatBubbleProps) {
+export default function ChatBubble({
+  sender,
+  message,
+  time,
+  isSelf,
+}: ChatBubbleProps) {
   return (
-    <div className={`flex flex-col ${isSelf ? "items-end ml-auto" : "items-start"} max-w-xl gap-2`}>
+    <div
+      className={`flex flex-col ${isSelf ? "items-end ml-auto" : "items-start"} max-w-xl gap-2`}
+    >
       <div className={`flex items-center gap-2 ${isSelf ? "mr-1" : "ml-1"}`}>
         {!isSelf && (
           <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
@@ -21,7 +28,6 @@ export default function ChatBubble({ sender, message, time, isSelf }: ChatBubble
           </span>
         )}
       </div>
-
       <div
         className={`p-4 rounded-2xl text-sm leading-relaxed shadow-lg transition-all ${
           isSelf

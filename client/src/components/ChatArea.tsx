@@ -16,6 +16,8 @@ export default function ChatArea({
   const [userMessage, setUserMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const socketRef = useRef<WebSocket | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [toast, setToast] = useState<{
     message: string;
@@ -33,6 +35,12 @@ export default function ChatArea({
   };
 
   useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
     const socket = new WebSocket("ws://localhost:8080");
     socketRef.current = socket;
 
@@ -41,26 +49,22 @@ export default function ChatArea({
         JSON.stringify({
           type: "join",
           payload: { roomId, name },
-        }),
+        })
       );
     };
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
       if (data.type === "system") {
         setCurrentActive(data.payload.count);
         setUsersList(data.payload.users || []);
       }
-
       if (data.type === "chat") {
         setMessages((prev) => [...prev, data.payload]);
       }
     };
 
-    return () => {
-      socket.close();
-    };
+    return () => socket.close();
   }, [roomId, name]);
 
   const handleSendMessage = (e: React.FormEvent) => {
@@ -71,10 +75,13 @@ export default function ChatArea({
       JSON.stringify({
         type: "chat",
         payload: { message: userMessage },
-      }),
+      })
     );
 
     setUserMessage("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
   };
 
   const handleInviteCopy = async () => {
@@ -90,16 +97,12 @@ export default function ChatArea({
     <div className="flex h-screen w-full bg-black text-white font-sans overflow-hidden relative">
       <div
         className={`fixed bottom-8 right-8 z-50 transition-all duration-500 transform ${
-          toast.show
-            ? "translate-y-0 opacity-100"
-            : "translate-y-12 opacity-0 pointer-events-none"
+          toast.show ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0 pointer-events-none"
         }`}
       >
         <div
           className={`bg-zinc-900 border ${
-            toast.type === "success"
-              ? "border-green-500/50"
-              : "border-red-500/50"
+            toast.type === "success" ? "border-green-500/50" : "border-red-500/50"
           } p-4 rounded-2xl shadow-2xl flex items-center gap-3 min-w-[320px] backdrop-blur-xl`}
         >
           <div className="flex-1">
@@ -128,7 +131,6 @@ export default function ChatArea({
           <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-4 px-2">
             Active Now — {currentActive}
           </div>
-
           {usersList.map((user) => (
             <div
               key={user}
@@ -140,11 +142,7 @@ export default function ChatArea({
                 </div>
                 <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 border-2 border-black rounded-full" />
               </div>
-              <span
-                className={`text-sm font-medium ${
-                  user === name ? "text-green-500" : "text-zinc-300"
-                }`}
-              >
+              <span className={`text-sm font-medium ${user === name ? "text-green-500" : "text-zinc-300"}`}>
                 {user} {user === name && "(You)"}
               </span>
             </div>
@@ -179,7 +177,7 @@ export default function ChatArea({
           </button>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8 scroll-smooth">
           {messages.map((msg, index) => (
             <ChatBubble
               key={index}
@@ -192,11 +190,9 @@ export default function ChatArea({
         </div>
 
         <footer className="p-6 md:p-10 bg-linear-to-t from-black to-transparent">
-          <form
-            onSubmit={handleSendMessage}
-            className="max-w-4xl mx-auto relative flex items-end gap-3"
-          >
+          <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto relative flex items-end gap-3">
             <textarea
+              ref={textareaRef}
               rows={1}
               value={userMessage}
               onChange={(e) => {
