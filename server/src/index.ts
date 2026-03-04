@@ -13,6 +13,19 @@ interface Room {
 const wss = new WebSocketServer({ port: 8080 });
 const roomMap = new Map<string, Room>();
 
+
+function broadcastToRoom(roomId: string, data: object) {
+  const room = roomMap.get(roomId);
+  if (!room) return;
+
+  const serializedData = JSON.stringify(data);
+  room.sockets.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(serializedData);
+    }
+  });
+}
+
 wss.on("connection", (socket: CustomSocket) => {
   socket.on("message", (data: RawData) => {
     try {
@@ -90,15 +103,3 @@ wss.on("connection", (socket: CustomSocket) => {
     }
   });
 });
-
-function broadcastToRoom(roomId: string, data: object) {
-  const room = roomMap.get(roomId);
-  if (!room) return;
-
-  const serializedData = JSON.stringify(data);
-  room.sockets.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(serializedData);
-    }
-  });
-}
