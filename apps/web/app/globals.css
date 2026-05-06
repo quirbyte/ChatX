@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+/* This is the most important line */
+/* It tells Tailwind to scan your UI package for classes */
+@source "../../../packages/ui/src";
