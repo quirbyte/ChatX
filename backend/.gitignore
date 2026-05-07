@@ -1,3 +1,8 @@
 .env
 node_modules
 /src/generated/prisma
+
+prisma.config.d.ts
+prisma.config.d.ts.map
+prisma.config.js
+prisma.config.js.map

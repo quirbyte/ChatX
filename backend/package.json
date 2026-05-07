@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx tsc -b && node dist/index.js"
+    "dev": "tsx watch src/index.ts"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -19,6 +19,8 @@
     "ws": "^8.20.0"
   },
   "devDependencies": {
-    "prisma": "^7.8.0"
+    "@types/node": "^25.6.1",
+    "prisma": "^7.8.0",
+    "tsx": "^4.21.0"
   }
 }

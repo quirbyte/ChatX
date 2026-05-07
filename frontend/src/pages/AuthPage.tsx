@@ -1,4 +1,6 @@
 
 export default function AuthPage(){
-    return <div>AuthPage</div>
+    return <div className="min-h-screen w-screen bg-amber-200">
+
+    </div>
 }
