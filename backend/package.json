@@ -11,11 +11,19 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.2",
+    "@otp-lib/authenticator": "^0.2.1",
+    "@otp-lib/core": "^0.2.0",
+    "@otplib/preset-default": "^12.0.1",
+    "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@types/express": "^5.0.6",
+    "@types/otplib": "^7.0.0",
     "@types/ws": "^8.18.1",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "otplib": "^13.4.0",
+    "pg": "^8.20.0",
     "qrcode": "^1.5.4",
     "typescript": "^6.0.3",
     "ws": "^8.20.0",
@@ -23,6 +31,8 @@
   },
   "devDependencies": {
     "@types/node": "^25.6.1",
+    "@types/pg": "^8.20.0",
+    "@types/qrcode": "^1.5.6",
     "prisma": "^7.8.0",
     "tsx": "^4.21.0"
   }

@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "NodeNext",          // This tells tsc to generate ESM (import/export)
-    "moduleResolution": "NodeNext",  // This ensures imports work correctly in Node
+    "module": "NodeNext",          
+    "moduleResolution": "NodeNext",  
     "outDir": "dist",
     "rootDir": "./",
     "strict": true,
