@@ -5,8 +5,13 @@ export default function SigninPage() {
     const [email, setEmail] = useState("");
     const [isVerified, setIsVerified] = useState(false);
     const [otp,setOtp]=useState("");
+    const [otpError,setOtpError]=useState(false);
 
-    const handleVerification = () => {
+    const handleVerify = () => {
+
+    }
+
+    const handleSubmit = () => {
 
     }
 
@@ -19,7 +24,7 @@ export default function SigninPage() {
                 <p className="text-zinc-500 text-xs mt-1">Sign in to your ChatX account</p>
             </header>
 
-            <form className="flex flex-col gap-4">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 ml-3">
                         Registered Email
@@ -27,7 +32,7 @@ export default function SigninPage() {
 
                     <div className="flex gap-2">
                         <input
-                            className="bg-zinc-950/50 p-3 rounded-xl border border-zinc-800 focus:outline-none focus:border-zinc-500 text-sm placeholder:text-zinc-700 flex-1"
+                            className="bg-zinc-950/50 p-3 rounded-xl border-2 border-zinc-800 focus:outline-none focus:border-zinc-500 text-sm placeholder:text-zinc-700 flex-1"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -36,7 +41,7 @@ export default function SigninPage() {
                         <button
                             type="button"
                             className="px-4 bg-zinc-100 rounded-xl text-black text-xs font-bold hover:bg-white hover:opacity-90 active:scale-95 transition-all"
-                            onClick={handleVerification}
+                            onClick={handleVerify}
                         >
                             Verify
                         </button>
@@ -48,7 +53,7 @@ export default function SigninPage() {
                         OTP
                     </label>
                     <input
-                        className="bg-zinc-950/50 p-3 rounded-xl border border-zinc-800 text-center tracking-[0.3em] text-sm focus:outline-none"
+                        className="bg-zinc-950/50 p-3 rounded-xl border-2 border-zinc-800 text-center tracking-[0.3em] text-sm focus:outline-none"
                         type="text"
                         maxLength={6}
                         value={otp}
@@ -56,10 +61,11 @@ export default function SigninPage() {
                         placeholder="••••••"
                         disabled={!isVerified}
                     />
+                    {otpError && <p className="text-[10px] ml-3 text-red-700">Invalid OTP</p>}
                 </div>
 
-                <button className="w-full mt-2 p-3 bg-zinc-100 text-black text-sm font-bold rounded-xl hover:bg-white active:scale-95 transition-all disabled:opacity-50" disabled={!isVerified}>
-                    Send Magic Link
+                <button type="submit" className="w-full mt-2 p-3 bg-zinc-100 text-black text-sm font-bold rounded-xl hover:bg-white active:scale-95 transition-all disabled:opacity-50" disabled={!isVerified}>
+                    Enter ChatX
                 </button>
 
                 <footer className="mt-4 text-center">
