@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import QrCard from "../../components/QrLoginCard";
 
 export default function SignupPage() {
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
+    const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [usernameError, setUsernameError] = useState(false);
@@ -13,7 +16,7 @@ export default function SignupPage() {
     const [otp, setOtp] = useState("");
     const [otpError, setOtpError] = useState(false);
 
-    const handleVerify = async () => {
+    const handleSignup = async () => {
         if (!username || !email) {
             setErrorMsg("Fill in all fields");
             setUsernameError(true);
@@ -26,6 +29,7 @@ export default function SignupPage() {
             const response = await axios.post("http://localhost:3000/auth/signup", { username, email });
             setQrcode(response.data.qrCode);
             setIsVerified(true);
+            setDialogOpen(true);
         } catch (err: any) {
             const error = err?.response?.data?.error || "Connection Error";
             setErrorMsg(error);
@@ -43,7 +47,7 @@ export default function SignupPage() {
             setLoading(true);
             const response = await axios.post("http://localhost:3000/auth/verify", { email, token: otp });
             if (response.data.verified) {
-                window.location.href = "/chat";
+                navigate("/chat");
             }
         } catch (err: any) {
             const error = err?.response?.data?.error || "Connection Error";
@@ -93,7 +97,7 @@ export default function SignupPage() {
                         />
                         <button
                             type="button"
-                            onClick={handleVerify}
+                            onClick={handleSignup}
                             disabled={loading}
                             className="px-4 bg-zinc-100 rounded-xl text-black text-xs font-bold hover:bg-white hover:opacity-90 active:scale-95 transition-all"
                         >
@@ -101,12 +105,7 @@ export default function SignupPage() {
                         </button>
                     </div>
                 </div>
-                {qrcode && (
-                    <div className="flex flex-col items-center gap-2 p-3 bg-white rounded-xl my-2">
-                        <p className="text-black text-[10px] font-black uppercase">Scan this QR Code</p>
-                        <img src={qrcode} alt="QR Code" className="w-32 h-32" />
-                    </div>
-                )}
+
                 <div className={`flex flex-col gap-1.5 ${isVerified ? "opacity-100" : "opacity-40"}`}>
                     <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 ml-3">
                         OTP
@@ -135,6 +134,20 @@ export default function SignupPage() {
                         Already have an account? <Link to="/signin" className="text-zinc-400 cursor-pointer hover:underline">Sign in</Link>
                     </p>
                 </footer>
+
+                {qrcode && dialogOpen && (
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50">
+                        <div className="relative p-2 bg-zinc-800 rounded-2xl border border-zinc-700 shadow-2xl animate-in fade-in zoom-in duration-300">
+                            <QrCard qrcode={qrcode} />
+                            <button
+                                onClick={() => setDialogOpen(false)}
+                                className="absolute -top-3 -right-3 h-8 w-8 rounded-full bg-zinc-100 hover:bg-white text-black font-bold shadow-lg transition-transform active:scale-90"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                )}
             </form>
         </div>
     );

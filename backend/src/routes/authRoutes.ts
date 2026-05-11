@@ -5,7 +5,7 @@ import { prisma } from "../../lib/prisma.js";
 
 export const authRouter = Router();
 
-authRouter.post("/verify", async (req: Request, res: Response) => {
+authRouter.post("/signup", async (req: Request, res: Response) => {
   const { email, username } = req.body;
   try {
     const secret = authenticator.generateSecret();
