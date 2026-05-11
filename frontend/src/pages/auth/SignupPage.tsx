@@ -41,12 +41,13 @@ export default function SignupPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(false);
+        setLoading(true);
         setOtpError(false);
         try {
-            setLoading(true);
             const response = await axios.post("http://localhost:3000/auth/verify", { email, token: otp });
-            if (response.data.verified) {
+            if (response.data.token) {
+                localStorage.setItem("chatx_token", response.data.token);
+                localStorage.setItem("chatx_user", JSON.stringify(response.data.user));
                 navigate("/chat");
             }
         } catch (err: any) {
@@ -75,6 +76,7 @@ export default function SignupPage() {
                     <input
                         className="bg-zinc-950/50 p-3 rounded-xl border-2 border-zinc-800 focus:outline-none focus:border-zinc-500 text-sm placeholder:text-zinc-700"
                         type="text"
+                        disabled={isVerified}
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         placeholder="username"
@@ -92,6 +94,7 @@ export default function SignupPage() {
                             className="bg-zinc-950/50 p-3 rounded-xl border-2 border-zinc-800 focus:outline-none focus:border-zinc-500 text-sm placeholder:text-zinc-700 flex-1"
                             type="email"
                             value={email}
+                            disabled={isVerified}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="email@domain.com"
                         />
@@ -101,7 +104,7 @@ export default function SignupPage() {
                             disabled={loading}
                             className="px-4 bg-zinc-100 rounded-xl text-black text-xs font-bold hover:bg-white hover:opacity-90 active:scale-95 transition-all"
                         >
-                            Verify
+                            {loading ? "..." : "Verify"}
                         </button>
                     </div>
                 </div>
