@@ -1,20 +1,57 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function SignupPage() {
     const [username, setUsername] = useState("");
-    const [usernameError,setUsernameError]=useState(false);
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const [usernameError, setUsernameError] = useState(false);
     const [email, setEmail] = useState("");
     const [isVerified, setIsVerified] = useState(false);
-    const [otp,setOtp]=useState("");
-    const [otpError,setOtpError]=useState(false);
+    const [qrcode, setQrcode] = useState("");
+    const [otp, setOtp] = useState("");
+    const [otpError, setOtpError] = useState(false);
 
-    const handleVerify=()=> {
-
+    const handleVerify = async () => {
+        if (!username || !email) {
+            setErrorMsg("Fill in all fields");
+            setUsernameError(true);
+            return;
+        }
+        setLoading(true);
+        setErrorMsg("");
+        setUsernameError(false);
+        try {
+            const response = await axios.post("http://localhost:3000/auth/signup", { username, email });
+            setQrcode(response.data.qrCode);
+            setIsVerified(true);
+        } catch (err: any) {
+            const error = err?.response?.data?.error || "Connection Error";
+            setErrorMsg(error);
+            setUsernameError(true);
+        } finally {
+            setLoading(false);
+        }
     }
 
-    const handleSubmit=()=>{
-        
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(false);
+        setOtpError(false);
+        try {
+            setLoading(true);
+            const response = await axios.post("http://localhost:3000/auth/verify", { email, token: otp });
+            if (response.data.verified) {
+                window.location.href = "/chat";
+            }
+        } catch (err: any) {
+            const error = err?.response?.data?.error || "Connection Error";
+            setErrorMsg(error);
+            setOtpError(true);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -38,7 +75,7 @@ export default function SignupPage() {
                         onChange={(e) => setUsername(e.target.value)}
                         placeholder="username"
                     />
-                    {usernameError && <p className="text-[10px] ml-3 text-red-700">Invalid Username</p>}
+                    {usernameError && <p className="text-[10px] ml-3 text-red-700">{errorMsg}</p>}
                 </div>
 
                 <div className="flex flex-col gap-1.5">
@@ -57,14 +94,20 @@ export default function SignupPage() {
                         <button
                             type="button"
                             onClick={handleVerify}
+                            disabled={loading}
                             className="px-4 bg-zinc-100 rounded-xl text-black text-xs font-bold hover:bg-white hover:opacity-90 active:scale-95 transition-all"
                         >
                             Verify
                         </button>
                     </div>
                 </div>
-
-                <div className="flex flex-col gap-1.5 opacity-40">
+                {qrcode && (
+                    <div className="flex flex-col items-center gap-2 p-3 bg-white rounded-xl my-2">
+                        <p className="text-black text-[10px] font-black uppercase">Scan this QR Code</p>
+                        <img src={qrcode} alt="QR Code" className="w-32 h-32" />
+                    </div>
+                )}
+                <div className={`flex flex-col gap-1.5 ${isVerified ? "opacity-100" : "opacity-40"}`}>
                     <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 ml-3">
                         OTP
                     </label>
@@ -72,15 +115,15 @@ export default function SignupPage() {
                         className="bg-zinc-950/50 p-3 rounded-xl border-2 border-zinc-800 text-center tracking-[0.3em] text-sm focus:outline-none"
                         type="text"
                         value={otp}
-                        onChange={(e)=>setOtp(e.target.value)}
+                        onChange={(e) => setOtp(e.target.value)}
                         maxLength={6}
                         placeholder="••••••"
                         disabled={!isVerified}
                     />
-                    {otpError && <p className="text-[10px] ml-3 text-red-700">Invalid OTP</p>}
+                    {otpError && <p className="text-[10px] ml-3 text-red-700">{errorMsg}</p>}
                 </div>
 
-                <button type="submit" className="w-full mt-2 p-3 bg-zinc-100 text-black text-sm font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all disabled:opacity-50" disabled={!isVerified}>
+                <button type="submit" className="w-full mt-2 p-3 bg-zinc-100 text-black text-sm font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all disabled:opacity-50" disabled={!isVerified || loading}>
                     Continue
                 </button>
 
