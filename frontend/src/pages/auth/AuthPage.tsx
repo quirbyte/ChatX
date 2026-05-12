@@ -43,7 +43,10 @@ export default function AuthPage() {
     return (
         <div className="relative h-screen w-screen bg-zinc-950 flex">
             <div className="absolute top-3 left-3">
-                <h1 className="text-4xl text-white font-extrabold tracking-tighter">ChatX</h1>
+                <h1 className="text-4xl flex gap-2 items-center">
+                    <h1 className="text-4xl text-white font-extrabold tracking-tighter">ChatX</h1>
+                    <img className="h-8 w-8" src="/icon.svg" alt="logo" />
+                </h1>
                 <p className="text-[10px] text-zinc-700">Trusted by millions of users worldwide</p>
             </div>
             <div className="h-full lg:w-1/2 w-full flex items-center justify-center">

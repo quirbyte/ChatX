@@ -62,9 +62,10 @@ export default function SignupPage() {
     return (
         <div className="bg-zinc-900/40 w-[90%] max-w-md text-zinc-200 rounded-2xl p-6 border border-zinc-800 backdrop-blur-md shadow-2xl">
             <header className="mb-6 text-center">
-                <h1 className="text-2xl font-bold tracking-tighter text-white">
-                    Join ChatX
-                </h1>
+                <div className="flex gap-2 items-center justify-center">
+                    <h1 className="text-2xl font-bold tracking-tighter text-white">Join</h1>
+                    <img className="h-6 w-6" src="/icon.svg" alt="logo" />
+                </div>
                 <p className="text-zinc-500 text-xs mt-1">Start chatting in seconds</p>
             </header>
 
