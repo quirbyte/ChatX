@@ -13,8 +13,12 @@ export default function Sidebar() {
         navigate("/signin", {replace:true});
     }
 
+    const handleHome = () => {
+        navigate("/");
+    }
+
     return <div className="relative flex flex-col justify-center items-center h-full w-full">
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 hover:opacity-85 cursor-default" onClick={handleHome}>
             <div className="text-4xl flex gap-2 items-center">
                 <h1 className="text-4xl text-white font-extrabold tracking-tighter">ChatX</h1>
                 <img className="h-8 w-8" src="/icon.svg" alt="logo" />
@@ -27,7 +31,7 @@ export default function Sidebar() {
             </div>
         </div>
         <div className="absolute bottom-3 left-3">
-            <div className="p-3 bg-zinc-950/50 border-2 border-zinc-700 w-72.5 h-15 rounded-2xl text-white flex justify-between items-center gap-5">
+            <div className="p-3 bg-zinc-950/50 border-2 hover:border-zinc-600 border-zinc-700 w-72.5 h-15 rounded-2xl text-white flex justify-between items-center gap-5">
                 <div className="rounded-full h-8 w-8 flex justify-center items-center bg-green-800">
                     <User />
                 </div>
@@ -39,7 +43,7 @@ export default function Sidebar() {
                         {email}
                     </div>
                 </div>
-                <div onClick={handleLogout} className="rounded-full h-8 w-8 flex justify-center items-center bg-red-800 hover:opacity-90 cursor-pointer">
+                <div onClick={handleLogout} className="rounded-full h-8 w-8 flex justify-center items-center bg-red-800 hover:opacity-90 cursor-default">
                     <Power/>
                 </div>
             </div>
