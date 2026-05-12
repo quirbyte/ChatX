@@ -17,7 +17,7 @@ export default function Navbar({displaySidebar,joinDialog,createDialog}:NavbarPr
                 <div className="flex items-center">
                 <img
                     onClick={handleHome}
-                    className={`hover:opacity-80 h-10 w-10 cursor-pointer transition-opacity ${!displaySidebar?"hidden":""}`}
+                    className={`hover:opacity-80 h-10 w-10 cursor-pointer transition-opacity ${displaySidebar?"hidden":""}`}
                     src="/icon.svg"
                     alt="ChatX Logo"
                 />
