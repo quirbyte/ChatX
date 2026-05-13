@@ -14,7 +14,7 @@ export default function ChatArea() {
             </div>
         </div>
         <div className="flex-1 overflow-y-auto p-4 scrollbar-none">
-            <p className="italic text-center text-sm mt-10">
+            <p className="italic text-center text-sm text-zinc-500">
                 Beggining of a legendary conversation.
             </p>
             <Incoming />

@@ -1,16 +1,17 @@
 import { User } from "lucide-react"
 import { Power } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import RoomCard from "./RoomCard";
 
 export default function Sidebar() {
     const user = JSON.parse(localStorage.getItem("chatx_user") as string);
     const name = user?.username;
     const email = user?.email;
-    const navigate=useNavigate();
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.clear();
-        navigate("/signin", {replace:true});
+        navigate("/signin", { replace: true });
     }
 
     const handleHome = () => {
@@ -24,10 +25,21 @@ export default function Sidebar() {
                 <img className="h-8 w-8" src="/icon.svg" alt="logo" />
             </div>
         </div>
-        <div className="h-[75vh] overflow-y-scroll scrollbar-none w-full p-3">
-            <h1 className="text-zinc-400 font-bold text-2xl text-center">ROOMS</h1>
-            <div className="min-h-[90%] w-full bg-zinc-950/20 rounded-2xl mt-2">
-            {/* Room name area */}
+        <h1 className="text-zinc-400 font-bold text-2xl text-center">ROOMS</h1>
+        <div className="h-[65vh] overflow-y-scroll scrollbar-none w-full p-3 pt-0">  
+            <div className="min-h-[90%] w-full bg-zinc-950/20 rounded-2xl mt-2 p-3 flex flex-col gap-2">
+                <RoomCard />
+                <RoomCard/>
+                <RoomCard/>
+                <RoomCard />
+                <RoomCard/>
+                <RoomCard/>
+                <RoomCard />
+                <RoomCard/>
+                <RoomCard/>
+                <RoomCard />
+                <RoomCard/>
+                <RoomCard/>
             </div>
         </div>
         <div className="absolute bottom-3 left-3">
@@ -44,7 +56,7 @@ export default function Sidebar() {
                     </div>
                 </div>
                 <div onClick={handleLogout} className="rounded-full h-8 w-8 flex justify-center items-center bg-red-800 hover:opacity-90 cursor-default">
-                    <Power/>
+                    <Power />
                 </div>
             </div>
         </div>
