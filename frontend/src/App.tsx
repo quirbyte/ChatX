@@ -19,7 +19,14 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/chat" element={<ChatPage />} />
         </Route>
+        <Route path="*" element={<NotFound/>} />
       </Routes>
     </BrowserRouter>
+  </div>
+}
+
+function NotFound(){
+  return <div className="min-h-screen w-screen bg-zinc-950 flex justify-center items-center text-white">
+    <p className="font-semibold tracking-tight text-3xl">Error 404 | Page does not exist.</p>
   </div>
 }
