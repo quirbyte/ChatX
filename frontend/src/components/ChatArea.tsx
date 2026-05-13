@@ -1,13 +1,15 @@
 import { LogOut, Send } from "lucide-react"
 import { useState } from "react";
 import LeaveDialog from "./LeaveRoomDialog";
+import Incoming from "./msg/Incoming";
+import Outgoing from "./msg/Outgoing";
 
 export default function ChatArea() {
     const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
     return <> <div className="flex flex-col h-full w-full text-white py-1 px-3">
         <div className="flex gap-3 items-center">
             <h1 className="uppercase text-xl font-bold tracking-wider text-zinc-300"># General</h1>
-            <div onClick={()=>setLeaveDialogOpen(true)} className="text-zinc-300 h-6 w-6 bg-red-900 rounded-full flex justify-center items-center">
+            <div onClick={() => setLeaveDialogOpen(true)} className="text-zinc-300 h-6 w-6 bg-red-900 hover:opacity-85 rounded-full flex justify-center items-center">
                 <LogOut size={13} />
             </div>
         </div>
@@ -15,6 +17,16 @@ export default function ChatArea() {
             <p className="italic text-center text-sm mt-10">
                 Beggining of a legendary conversation.
             </p>
+            <Incoming />
+            <Outgoing />
+            <Incoming />
+            <Outgoing />
+            <Incoming />
+            <Outgoing />
+            <Incoming />
+            <Outgoing />
+            <Incoming />
+            <Outgoing />
         </div>
 
         <div className="py-2 px-0 bg-zinc-950">
@@ -35,9 +47,9 @@ export default function ChatArea() {
             </div>
         </div>
     </div>
-    {leaveDialogOpen && <div className="fixed inset-0 z-50 flex justify-center items-center bg-zinc-950/40 backdrop-blur-xs">
-        <LeaveDialog handleClose={()=>setLeaveDialogOpen(false)} />
-    </div>}
+        {leaveDialogOpen && <div className="fixed inset-0 z-50 flex justify-center items-center bg-zinc-950/40 backdrop-blur-xs">
+            <LeaveDialog handleClose={() => setLeaveDialogOpen(false)} />
+        </div>}
     </>
 }
 
