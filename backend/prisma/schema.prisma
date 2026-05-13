@@ -7,11 +7,42 @@ datasource db {
   provider = "postgresql"
 }
 
+enum MessageType {
+  CHAT
+  JOIN
+  LEAVE
+}
+
 model User {
-  id         String  @id @default(uuid())
-  email      String  @unique
-  username   String
-  otpSecret  String?
-  verified   Boolean @default(false)
-  createdAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String
+  otpSecret String?
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  rooms    Room[]    @relation("UserRooms")
+  messages Message[]
+}
+
+model Room {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  createdAt DateTime @default(now())
+
+  users    User[]    @relation("UserRooms")
+  messages Message[]
+}
+
+model Message {
+  id        String      @id @default(cuid())
+  msgType   MessageType
+  content   String
+  createdAt DateTime    @default(now())
+
+  senderId String
+  sender   User   @relation(references: [id], fields: [senderId])
+
+  roomId String
+  room   Room   @relation(references: [id], fields: [roomId])
 }
