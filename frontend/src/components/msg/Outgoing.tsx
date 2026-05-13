@@ -1,15 +1,21 @@
+import { User } from "lucide-react";
 
 export default function Outgoing() {
-    return <div className="flex gap-4 flex-row-reverse group">
-        <div className="h-10 w-10 rounded-2xl bg-zinc-100 shrink-0" />
-        <div className="space-y-2 text-right">
-            <div className="flex items-center gap-3 justify-end">
-                <span className="text-[9px] font-medium text-zinc-700 uppercase">12:46 PM</span>
-                <span className="text-[11px] font-black uppercase tracking-tighter text-white">Me</span>
+    return (
+        <div className="flex gap-2 sm:gap-3 flex-row-reverse items-start mt-2 ml-auto max-w-[90%] sm:max-w-[75%]">
+            <div className="h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-zinc-100 shrink-0 flex items-center justify-center mt-1">
+                <User color="black" size={14} className="sm:size-5" />
             </div>
-            <div className="bg-zinc-100 p-4 rounded-3xl rounded-tr-none max-w-md text-sm font-medium text-black leading-relaxed shadow-[0_10px_40px_rgba(255,255,255,0.05)]">
-                Words are, of course, the most powerful drug used by mankind.
+
+            <div className="flex flex-col items-end space-y-1">
+                <div className="flex items-baseline gap-2 px-1">
+                    <span className="text-[8px] font-medium text-zinc-600 uppercase">12:46 PM</span>
+                    <span className="text-[10px] font-bold text-white">Me</span>
+                </div>
+                <div className="bg-zinc-100 p-2.5 sm:p-3 rounded-2xl rounded-tr-none text-[13px] sm:text-sm font-medium text-black leading-snug shadow-md">
+                    Words are, of course, the most powerful drug used by mankind.
+                </div>
             </div>
         </div>
-    </div>
+    );
 }
