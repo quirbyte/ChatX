@@ -37,6 +37,15 @@ export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: 
         }
     }
 
+    const handleCopyCode = async (text: string) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            alert("Code copied to clipboard!");
+        } catch (err) {
+            console.error("Failed to copy: ", err);
+        }
+    }
+
     return (
         <>
             {
@@ -53,7 +62,7 @@ export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: 
                         </div>
                         <div className="uppercase text-[11px] py-1.5 px-3 border border-zinc-800 rounded-2xl bg-zinc-900/40 font-semibold flex gap-2">
                             <div>Room code: {activeRoom?.code} </div>
-                            <div className="cursor-default hover:opacity-70">
+                            <div onClick={()=>handleCopyCode(activeRoom?.code)} className="cursor-default hover:opacity-70">
                                 <CopyIcon size={10} color="grey" />
                             </div>
                         </div>

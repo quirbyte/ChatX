@@ -28,7 +28,7 @@ roomRouter.post(
   async (req: Request, res: Response) => {
     try {
       const userId = req.userId;
-      const roomCode = await createUniqueRoomCode();
+      const roomCode = (await createUniqueRoomCode()).toUpperCase();
       const password = req.body.password;
       const name = req.body.name;
       if (!name || !password) {
@@ -61,7 +61,7 @@ roomRouter.post(
 roomRouter.put("/join", UserMiddleware, async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
-    const roomCode = req.body.code;
+    const roomCode = req.body.code.toUpperCase();
     const password = req.body.password;
     if (!roomCode || !password) {
       return res.status(404).json({
