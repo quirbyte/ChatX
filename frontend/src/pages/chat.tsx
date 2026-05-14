@@ -13,7 +13,7 @@ export default function ChatPage() {
 
     return (
         <div className="bg-zinc-950 h-screen w-screen flex relative overflow-hidden">
-            <div className={`relative z-20 h-full bg-zinc-900 border-r border-zinc-800 transition-all duration-300 ease-in-out 
+            <div className={`relative z-20 h-full bg-zinc-950/40 border-r border-zinc-800 transition-all duration-300 ease-in-out 
                 ${isOpen ? "w-80" : "w-0"}`}
             >
                 <div className={`w-80 h-full transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>

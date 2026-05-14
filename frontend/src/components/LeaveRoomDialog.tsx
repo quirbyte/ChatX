@@ -6,7 +6,7 @@ export interface LeaveCardProps{
 
 export default function LeaveDialog({handleClose}:LeaveCardProps){
     return <div className="relative h-60 w-60 bg-zinc-900 text-white rounded-xl flex justify-center items-center">
-        <h1 className="absolute top-1 text-3xl font-bold text-center">Confirm Leave</h1>
+        <h1 className="absolute top-1 text-3xl font-bold text-center mt-2">Confirm Leave</h1>
         <p>Do yo want to leave the room?</p>
         <div className="flex absolute bottom-0 w-full">
             <button onClick={handleClose} className="w-[50%] cursor-pointer hover:opacity-90 h-10 bg-zinc-700 rounded-bl-xl">No</button>

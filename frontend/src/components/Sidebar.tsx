@@ -43,7 +43,7 @@ export default function Sidebar() {
             </div>
         </div>
         <div className="absolute bottom-3 left-3">
-            <div className="p-3 bg-zinc-950/50 border-2 hover:border-zinc-600 border-zinc-700 w-72.5 h-15 rounded-2xl text-white flex justify-between items-center gap-5">
+            <div className="p-3 bg-zinc-900 border-2 hover:border-zinc-700 border-zinc-800 w-72.5 h-15 rounded-2xl text-white flex justify-between items-center gap-5">
                 <div className="rounded-full h-8 w-8 flex justify-center items-center bg-green-800">
                     <User />
                 </div>
