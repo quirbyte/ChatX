@@ -2,12 +2,22 @@ import { User } from "lucide-react"
 import { Power } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import RoomCard from "./RoomCard";
+import { useEffect } from "react";
 
-export default function Sidebar() {
+interface SidebarProps{
+    getRooms: ()=>void,
+    rooms : any[]
+}
+
+export default function Sidebar({getRooms,rooms}:SidebarProps) {
     const user = JSON.parse(localStorage.getItem("chatx_user") as string);
     const name = user?.username;
     const email = user?.email;
     const navigate = useNavigate();
+
+    useEffect(() => {
+        getRooms();
+    }, [])
 
     const handleLogout = () => {
         localStorage.clear();
@@ -26,20 +36,16 @@ export default function Sidebar() {
             </div>
         </div>
         <h1 className="text-zinc-400 font-bold text-2xl text-center">ROOMS</h1>
-        <div className="h-[65vh] overflow-y-scroll scrollbar-none w-full p-3 pt-0">  
+        <div className="h-[65vh] overflow-y-scroll scrollbar-none w-full p-3 pt-0">
             <div className="min-h-[90%] w-full bg-zinc-950/20 rounded-2xl mt-2 p-3 flex flex-col gap-2">
-                <RoomCard />
-                <RoomCard/>
-                <RoomCard/>
-                <RoomCard />
-                <RoomCard/>
-                <RoomCard/>
-                <RoomCard />
-                <RoomCard/>
-                <RoomCard/>
-                <RoomCard />
-                <RoomCard/>
-                <RoomCard/>
+                {rooms.length > 0 ?
+                    rooms.map((room: any) => (
+                        <RoomCard key={room.id} name={room.name} />
+                    )) :
+                    <div className="text-zinc-600 text-xs text-center mt-4 italic">
+                        Join or create a room to start chatting
+                    </div>
+                }
             </div>
         </div>
         <div className="absolute bottom-3 left-3">

@@ -1,6 +1,7 @@
 import { useState } from "react"
+import axios from "axios";
 
-export default function JoinDialog({ handleClose }: { handleClose: () => void }) {
+export default function JoinDialog({ handleClose, refreshData }: { handleClose: () => void, refreshData: () => void }) {
     const [loading, setLoading] = useState(false);
     const [roomcode, setRoomcode] = useState("");
     const [password, setPassword] = useState("");
@@ -20,7 +21,15 @@ export default function JoinDialog({ handleClose }: { handleClose: () => void })
         }
         setLoading(true);
         try {
-            //api call
+            await axios.put("http://localhost:3000/room/join",
+                {
+                    code: roomcode,
+                    password
+                }, {
+                headers: { authorization: localStorage.getItem("chatx_token") }
+            }
+            )
+            refreshData();
             handleClose();
         } catch (err: any) {
             const error = err?.response?.data?.error || "Connection Error";

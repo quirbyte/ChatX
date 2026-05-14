@@ -5,11 +5,25 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import JoinDialog from "../components/JoinDialog";
 import CreateDialog from "../components/createDialog";
 import ChatArea from "../components/ChatArea";
+import axios from "axios";
 
 export default function ChatPage() {
     const [isOpen, setIsOpen] = useState(true);
     const [joinDialogOpen, setJoinDialogOpen] = useState(false);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
+
+    const [rooms, setRooms] = useState([]);
+
+    const getRooms = async () => {
+        try {
+            const response = await axios.get("http://localhost:3000/room/", {
+                headers: { authorization: localStorage.getItem("chatx_token") }
+            });
+            setRooms(response.data.userRooms);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
         <div className="bg-zinc-950 h-screen w-screen flex relative overflow-hidden">
@@ -17,7 +31,7 @@ export default function ChatPage() {
                 ${isOpen ? "w-80" : "w-0"}`}
             >
                 <div className={`w-80 h-full transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-                    <Sidebar />
+                    <Sidebar getRooms={getRooms} rooms={rooms} />
                 </div>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
@@ -38,12 +52,12 @@ export default function ChatPage() {
             </div>
             {joinDialogOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                    <JoinDialog handleClose={() => setJoinDialogOpen(false)} />
+                    <JoinDialog handleClose={() => setJoinDialogOpen(false)} refreshData={getRooms} />
                 </div>
             )}
             {createDialogOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                    <CreateDialog handleClose={() => setCreateDialogOpen(false)} />
+                    <CreateDialog handleClose={() => setCreateDialogOpen(false)} refreshData={getRooms} />
                 </div>
             )}
         </div>

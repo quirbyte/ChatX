@@ -1,6 +1,7 @@
+import axios from "axios";
 import { useState } from "react"
 
-export default function CreateDialog({ handleClose }: { handleClose: () => void }) {
+export default function CreateDialog({ handleClose,refreshData }: { handleClose: () => void,refreshData:()=>void }) {
     const [loading, setLoading] = useState(false);
     const [roomname, setRoomname] = useState("");
     const [password, setPassword] = useState("");
@@ -20,7 +21,17 @@ export default function CreateDialog({ handleClose }: { handleClose: () => void 
         }
         setLoading(true);
         try {
-            //api call
+            await axios.post("http://localhost:3000/room/create",
+                {
+                    name: roomname,
+                    password: password
+                }, {
+                headers: {
+                    authorization: localStorage.getItem("chatx_token")
+                },
+            }
+            )
+            refreshData();
             handleClose();
         } catch (err: any) {
             const error = err?.response?.data?.error || "Connection Error";
