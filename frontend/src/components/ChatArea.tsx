@@ -37,6 +37,9 @@ export default function ChatArea() {
                     <Outgoing />
                     <Incoming />
                     <Outgoing />
+                    <Incoming/>
+                    <Incoming/>
+                    <Outgoing/>
                 </div>
 
                 <div className="p-3 sm:p-4 bg-zinc-950 border-t border-zinc-900">
