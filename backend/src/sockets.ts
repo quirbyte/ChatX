@@ -1,10 +1,17 @@
-import { WebSocketServer } from "ws";
-import { prisma } from "../lib/prisma.js";
+import WebSocket, { WebSocketServer } from "ws";
+import { Server } from "http";
 
-const wss = new WebSocketServer({ port: 8080 });
+export function initSocketServer(httpserver: Server) {
+  const wss = new WebSocketServer({ server: httpserver });
 
-wss.on("connection",(socket:WebSocket)=>{
-    socket.on("message", ()=>{
-        
-    })
-})
+  wss.on("connection", (socket: WebSocket) => {
+    console.log("Client connected");
+    socket.on("message", async (data) => {
+      console.log(JSON.parse(data.toString()));
+    });
+
+    socket.on("close", () => {
+      console.log("Client disconnected");
+    });
+  });
+}
