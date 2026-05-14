@@ -28,6 +28,8 @@ model User {
 model Room {
   id        String   @id @default(cuid())
   code      String   @unique
+  name      String
+  password  String
   createdAt DateTime @default(now())
 
   users    User[]    @relation("UserRooms")

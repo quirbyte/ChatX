@@ -3,6 +3,7 @@ import cors from "cors";
 import { initSocketServer } from "./sockets.js";
 import { createServer } from "http";
 import { authRouter } from "./routes/authRoutes.js";
+import { roomRouter } from "./routes/roomRoutes.js";
 
 const app=express();
 const httpServer = createServer(app);
@@ -16,6 +17,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use("/auth",authRouter);
+app.use("/room",roomRouter);
 
 initSocketServer(httpServer);
 
