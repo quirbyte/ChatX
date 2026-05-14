@@ -45,5 +45,5 @@ model Message {
   sender   User   @relation(references: [id], fields: [senderId])
 
   roomId String
-  room   Room   @relation(references: [id], fields: [roomId])
+  room   Room   @relation(references: [id], fields: [roomId], onDelete: Cascade)
 }

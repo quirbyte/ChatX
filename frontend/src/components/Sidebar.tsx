@@ -3,13 +3,16 @@ import { Power } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import RoomCard from "./RoomCard";
 import { useEffect } from "react";
+import type { RoomInterface } from "../pages/chat";
 
 interface SidebarProps{
     getRooms: ()=>void,
-    rooms : any[]
+    rooms : any[],
+    activeRoom : RoomInterface | null
+    handleActiveRoom : (room :RoomInterface) => void
 }
 
-export default function Sidebar({getRooms,rooms}:SidebarProps) {
+export default function Sidebar({getRooms,rooms,activeRoom, handleActiveRoom}:SidebarProps) {
     const user = JSON.parse(localStorage.getItem("chatx_user") as string);
     const name = user?.username;
     const email = user?.email;
@@ -40,7 +43,7 @@ export default function Sidebar({getRooms,rooms}:SidebarProps) {
             <div className="min-h-[90%] w-full bg-zinc-950/20 rounded-2xl mt-2 p-3 flex flex-col gap-2">
                 {rooms.length > 0 ?
                     rooms.map((room: any) => (
-                        <RoomCard key={room.id} name={room.name} />
+                        <RoomCard key={room.id} room={room} handleActiveRoom={handleActiveRoom} isActive={activeRoom?.id === room.id} />
                     )) :
                     <div className="text-zinc-600 text-xs text-center mt-4 italic">
                         Join or create a room to start chatting

@@ -7,9 +7,16 @@ import CreateDialog from "../components/createDialog";
 import ChatArea from "../components/ChatArea";
 import axios from "axios";
 
+export interface RoomInterface {
+    id: string;
+    name: string;
+    code: string
+}
+
 export default function ChatPage() {
     const [isOpen, setIsOpen] = useState(true);
     const [joinDialogOpen, setJoinDialogOpen] = useState(false);
+    const [activeRoom, setActiveRoom] = useState<RoomInterface | null>(null);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
     const [rooms, setRooms] = useState([]);
@@ -25,13 +32,17 @@ export default function ChatPage() {
         }
     };
 
+    const handleActiveRoom = (room:RoomInterface|null) => {
+        setActiveRoom(room);
+    }
+
     return (
         <div className="bg-zinc-950 h-screen w-screen flex relative overflow-hidden">
             <div className={`relative z-20 h-full bg-zinc-950/40 border-r border-zinc-800 transition-all duration-300 ease-in-out 
                 ${isOpen ? "w-80" : "w-0"}`}
             >
                 <div className={`w-80 h-full transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-                    <Sidebar getRooms={getRooms} rooms={rooms} />
+                    <Sidebar getRooms={getRooms} rooms={rooms} activeRoom={activeRoom} handleActiveRoom={handleActiveRoom} />
                 </div>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
@@ -47,7 +58,7 @@ export default function ChatPage() {
                     createDialog={() => setCreateDialogOpen(true)}
                 />
                 <main className="flex-1 overflow-hidden w-full">
-                    <ChatArea />
+                    <ChatArea activeRoom={activeRoom} handleActiveRoom={handleActiveRoom} refreshData={getRooms} />
                 </main>
             </div>
             {joinDialogOpen && (

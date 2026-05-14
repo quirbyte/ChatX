@@ -1,11 +1,13 @@
+import type { RoomInterface } from "../pages/chat";
 
-interface RoomCardProps{
-    key: string;
-    name: string
+interface RoomCardProps {
+    room: RoomInterface;
+    handleActiveRoom: (room: RoomInterface) => void;
+    isActive: boolean
 }
 
-export default function RoomCard(props:RoomCardProps){
-    return <div className="h-10 w-full cursor-default bg-zinc-900 hover:bg-white hover:scale-97 transition-all hover:text-black border border-zinc-800 rounded-xl p-3 flex items-center justify-center text-lg font-semibold text-white">
-        {props.name}
+export default function RoomCard({ room, isActive, handleActiveRoom }: RoomCardProps) {
+    return <div onClick={() => handleActiveRoom(room)} className={`h-10 w-full cursor-default transition-all border border-zinc-800 rounded-xl p-3 flex items-center justify-center text-lg font-bold uppercase ${isActive ? "bg-white text-black scale-97" : "bg-zinc-900 text-white hover:bg-zinc-800"}`}>
+        {room.name}
     </div>
 }

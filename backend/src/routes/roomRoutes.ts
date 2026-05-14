@@ -101,38 +101,26 @@ roomRouter.put("/join", UserMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-roomRouter.delete(
-  "/leave",
-  UserMiddleware,
-  async (req: Request, res: Response) => {
-    try {
-      const userId = req.userId;
-      const roomCode = req.body.code;
-      if (!roomCode) {
-        return res.status(404).json({
-          error: "Room code or password missing",
-        });
-      }
-      const response = await prisma.room.update({
-        where: {
-          code: roomCode,
-        },
-        data: {
-          users: {
-            disconnect: { id: userId },
-          },
-        },
-      });
-      return res.json({
-        msg: "Left room successfully",
-      });
-    } catch (err: any) {
-      if (err.code === "P2025") {
-        return res.status(404).json({ error: "Room not found" });
-      }
-      return res.status(500).json({
-        error: "Internal server error",
-      });
+roomRouter.delete("/leave", UserMiddleware, async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+    const { code } = req.body;
+
+    const updatedRoom = await prisma.room.update({
+      where: { code },
+      data: {
+        users: { disconnect: { id: userId } }
+      },
+      include: { _count: { select: { users: true } } }
+    });
+
+    if (updatedRoom._count.users === 0) {
+      await prisma.room.delete({ where: { id: updatedRoom.id } });
     }
-  },
-);
+
+    return res.json({ msg: "Left room" });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({ error: "Transaction failed or Room not found" });
+  }
+});
