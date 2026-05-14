@@ -1,4 +1,4 @@
-import { LogOut, Send } from "lucide-react"
+import { LogOut, Send, CopyIcon } from "lucide-react"
 import { useState } from "react";
 import LeaveDialog from "./LeaveRoomDialog";
 import Incoming from "./msg/Incoming";
@@ -11,13 +11,19 @@ export default function ChatArea() {
         <>
             <div className="flex flex-col h-full w-full text-white overflow-hidden bg-zinc-950">
                 <div className="flex justify-between items-center px-4 py-3 border-b border-zinc-900 bg-zinc-950/50 backdrop-blur-md">
-                    <div className="flex gap-3 items-center">
+                    <div className="flex gap-3 items-center ">
                         <h1 className="uppercase text-lg sm:text-xl font-bold tracking-wider text-zinc-300"># General</h1>
                         <div
                             onClick={() => setLeaveDialogOpen(true)}
                             className="text-zinc-300 h-6 w-6 bg-red-950/30 hover:bg-red-900 border border-red-900/50 rounded-full flex justify-center items-center cursor-pointer transition-all"
                         >
                             <LogOut size={12} />
+                        </div>
+                    </div>
+                    <div className="uppercase text-[11px] py-1.5 px-3 border border-zinc-800 rounded-2xl bg-zinc-900/40 font-semibold flex gap-2">
+                        <div>Room code: abcdef </div>
+                        <div className="cursor-default hover:opacity-70">
+                            <CopyIcon size={10} color="grey" />
                         </div>
                     </div>
                 </div>
