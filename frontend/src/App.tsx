@@ -5,11 +5,13 @@ import SigninPage from "./pages/auth/SigninPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthProtected from "./components/AuthProtected";
 import ChatPage from "./pages/chat";
+import LandingPage from "./pages/LandingPage";
 
 export default function App() {
   return <div className="min-h-screen">
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LandingPage/>} />
         <Route element={<AuthProtected />}>
           <Route element={<AuthPage />}>
             <Route path="/signup" element={<SignupPage />} />
