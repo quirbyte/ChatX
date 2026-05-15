@@ -1,5 +1,5 @@
 import { generateRoomCode } from "./codeGenerator.js";
-import { prisma } from "../../lib/prisma.js";
+import { prisma } from "../lib/prisma.js";
 
 export async function createUniqueRoomCode() {
   let isUnique = false;
