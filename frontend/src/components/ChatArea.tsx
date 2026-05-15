@@ -1,5 +1,5 @@
 import { LogOut, Send, CopyIcon } from "lucide-react"
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import LeaveDialog from "./LeaveRoomDialog";
 import Incoming from "./msg/Incoming";
 import Outgoing from "./msg/Outgoing";
@@ -15,6 +15,49 @@ interface ChatAreaProps {
 export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: ChatAreaProps) {
     const [loading, setLoading] = useState(false);
     const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
+    const socketRef = useRef<WebSocket | null>(null);
+    const [messages, setMessages] = useState<any[]>([]);
+    const [inputText, setInputText] = useState("");
+    const user = JSON.parse(localStorage.getItem("chatx_user") || "{}");
+    console.log("Current User from Storage:", user);
+
+    useEffect(() => {
+        if (!activeRoom)
+            return;
+
+
+        const fetchHistory = async () => {
+            if (!activeRoom) return;
+            const res = await axios.get(`http://localhost:3000/room/${activeRoom.id}/messages`, {
+                headers: { authorization: localStorage.getItem("chatx_token") }
+            });
+            setMessages(res.data);
+        };
+
+        fetchHistory();
+        const ws = new WebSocket("ws://localhost:3000");
+        socketRef.current = ws;
+
+        ws.onopen = () => {
+            ws.send(JSON.stringify({
+                type: "JOIN",
+                roomId: activeRoom.id,
+                userId: user.id
+            }))
+        }
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === "NEW_MESSAGE") {
+                setMessages((prev) => [...prev, data.payload]);
+            }
+        }
+
+        return () => {
+            ws.close();
+        }
+
+    }, [activeRoom?.id]);
 
     const handleLeaveRoom = async () => {
         setLoading(true);
@@ -46,6 +89,20 @@ export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: 
         }
     }
 
+    const handleSendMessage = () => {
+        if (!inputText.trim() || !socketRef.current || !activeRoom) return;
+
+        const messagePayload = {
+            type: "CHAT",
+            content: inputText,
+            roomId: activeRoom.id,
+            userId: user.id
+        };
+
+        socketRef.current.send(JSON.stringify(messagePayload));
+        setInputText("");
+    }
+
     return (
         <>
             {
@@ -62,24 +119,25 @@ export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: 
                         </div>
                         <div className="uppercase text-[11px] py-1.5 px-3 border border-zinc-800 rounded-2xl bg-zinc-900/40 font-semibold flex gap-2">
                             <div>Room code: {activeRoom?.code} </div>
-                            <div onClick={()=>handleCopyCode(activeRoom?.code)} className="cursor-default hover:opacity-70">
+                            <div onClick={() => handleCopyCode(activeRoom?.code)} className="cursor-default hover:opacity-70">
                                 <CopyIcon size={10} color="grey" />
                             </div>
                         </div>
                     </div>
                     <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 scrollbar-none space-y-1">
-                        <p className="italic text-center text-[10px] sm:text-xs text-zinc-600 mb-8">
-                            Beginning of a legendary conversation.
-                        </p>
-                        <Incoming />
-                        <Outgoing />
-                        <Incoming />
-                        <Outgoing />
-                        <Incoming />
-                        <Outgoing />
-                        <Incoming />
-                        <Incoming />
-                        <Outgoing />
+                        {messages.length === 0 && (
+                            <p className="italic text-center text-[10px] sm:text-xs text-zinc-600 mb-8">
+                                Beginning of a legendary conversation.
+                            </p>
+                        )}
+                        {
+                            messages.map((msg, index) => {
+                                const isMe = msg.senderId === user.id;
+                                return (isMe) ?
+                                    <Outgoing key={msg.id || index} content={msg.content} time={msg.createdAt} />
+                                    : <Incoming key={msg.id || index} content={msg.content} time={msg.createdAt} sender={msg.sender.username} />
+                            })
+                        }
                     </div>
 
                     <div className="p-3 sm:p-4 bg-zinc-950 border-t border-zinc-900">
@@ -88,13 +146,15 @@ export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: 
                                 className="flex-1 bg-transparent border-none outline-none p-2 text-[13px] sm:text-sm resize-none scrollbar-none min-h-11 max-h-32 text-zinc-200"
                                 placeholder="Send a message..."
                                 rows={1}
+                                value={inputText}
                                 onInput={(e) => {
                                     const target = e.target as HTMLTextAreaElement;
                                     target.style.height = 'inherit';
                                     target.style.height = `${target.scrollHeight}px`;
                                 }}
+                                onChange={(e) => setInputText(e.target.value)}
                             />
-                            <button className="mb-1 mr-1 p-2 bg-inherit rounded-xl hover:bg-green-800/20 text-green-500 transition-all active:scale-95">
+                            <button onClick={handleSendMessage} className="mb-1 mr-1 p-2 bg-inherit rounded-xl hover:bg-green-800/20 text-green-500 transition-all active:scale-95">
                                 <Send size={18} />
                             </button>
                         </div>

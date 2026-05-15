@@ -99,7 +99,7 @@ authRouter.post("/verify", async (req: Request, res: Response) => {
     res.json({
       message: "Verification successful",
       token: authToken,
-      user: { username: user.username, email: user.email },
+      user: { username: user.username, email: user.email, id: user.id },
     });
   } catch (error) {
     console.error("Verification error:", error);
