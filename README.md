@@ -30,7 +30,7 @@ A high-performance, real-time ephemeral chat application built with the **PERN**
 * PostgreSQL (Hosted on Neon)
 
 
-### Prerequisites
+## Prerequisites
 
 * Node.js (v18+)
 * PostgreSQL database (Neon recommended)
