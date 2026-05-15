@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { prisma } from "../../lib/prisma.js";
+import { prisma } from "../lib/prisma.js";
 import { UserMiddleware } from "../middleware/userMiddleware.js";
 import { createUniqueRoomCode } from "../utils/codeChecker.js";
 

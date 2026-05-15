@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { authenticator } from "@otplib/preset-default";
 import QRCode from "qrcode";
 import jwt from "jsonwebtoken";
-import { prisma } from "../../lib/prisma.js";
+import { prisma } from "../lib/prisma.js";
 
 export const authRouter = Router();
 

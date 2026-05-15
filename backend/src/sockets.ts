@@ -1,6 +1,6 @@
 import WebSocket, { WebSocketServer } from "ws";
 import { Server } from "http";
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "./lib/prisma.js";
 
 const roomMap = new Map<string, Set<WebSocket>>();
 
@@ -63,7 +63,7 @@ export function initSocketServer(httpserver: Server) {
 
             prisma.message
               .count({ where: { roomId } })
-              .then(async (count) => {
+              .then(async (count:number) => {
                 if (count > 15) {
                   const oldMessages = await prisma.message.findMany({
                     where: { roomId },
@@ -72,11 +72,11 @@ export function initSocketServer(httpserver: Server) {
                     select: { id: true },
                   });
                   await prisma.message.deleteMany({
-                    where: { id: { in: oldMessages.map((m) => m.id) } },
+                    where: { id: { in: oldMessages.map((m:any) => m.id) } },
                   });
                 }
               })
-              .catch((e) => console.error("Cleanup error:", e));
+              .catch((e:any) => console.error("Cleanup error:", e));
           } catch (err) {
             console.error("Database Error during CHAT:", err);
           }
