@@ -29,7 +29,6 @@ A high-performance, real-time ephemeral chat application built with the **PERN**
 * Prisma ORM
 * PostgreSQL (Hosted on Neon)
 
-## 🚀 Getting Started
 
 ### Prerequisites
 
