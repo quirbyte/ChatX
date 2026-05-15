@@ -14,6 +14,7 @@ interface ChatAreaProps {
 
 export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: ChatAreaProps) {
     const [loading, setLoading] = useState(false);
+    const [copyToast, setCopyToast] = useState(false);
     const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
     const socketRef = useRef<WebSocket | null>(null);
     const [messages, setMessages] = useState<any[]>([]);
@@ -83,9 +84,13 @@ export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: 
     const handleCopyCode = async (text: string) => {
         try {
             await navigator.clipboard.writeText(text);
-            alert("Code copied to clipboard!");
+            setCopyToast(true);
+            setTimeout(() => {
+                setCopyToast(false);
+            }, 2000);
         } catch (err) {
             console.error("Failed to copy: ", err);
+            setCopyToast(false);
         }
     }
 
@@ -107,7 +112,7 @@ export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: 
         <>
             {
                 activeRoom ? <div className="flex flex-col h-full w-full text-white overflow-hidden bg-zinc-950">
-                    <div className="flex justify-between items-center px-4 py-3 border-b border-zinc-900 bg-zinc-950/50 backdrop-blur-md">
+                    <div className="relative flex justify-between items-center px-4 py-3 border-b border-zinc-900 bg-zinc-950/50 backdrop-blur-md">
                         <div className="flex gap-3 items-center ">
                             <h1 className="uppercase text-lg sm:text-xl font-bold tracking-wider text-zinc-300"># {activeRoom?.name}</h1>
                             <div
@@ -123,6 +128,11 @@ export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: 
                                 <CopyIcon size={10} color="grey" />
                             </div>
                         </div>
+                        {
+                            copyToast && <div className="absolute right-5 rounded-xl -bottom-4 bg-zinc-600 text-[10px] text-white py-1 px-3">
+                                Code copied successfully
+                            </div>
+                        }
                     </div>
                     <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 scrollbar-none space-y-1">
                         {messages.length === 0 && (

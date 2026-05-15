@@ -2,7 +2,6 @@
 
 To-do
 
-
-1. copied to clipboard toast
-2. landing page
-3. delpoy
+1. landing page
+2. multi line correct format message
+3. deploy
