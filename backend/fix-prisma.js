@@ -1,13 +1,21 @@
 import fs from 'fs';
 import path from 'path';
 
-// Change this path if your generated client is elsewhere
-const prismaClientPath = './src/generated/prisma/index.js'; 
+const pathsToFix = [
+    './src/generated/prisma/index.js',
+    './dist/generated/prisma/index.js'
+];
 
-if (fs.existsSync(prismaClientPath)) {
-    let content = fs.readFileSync(prismaClientPath, 'utf8');
-    // This fixes the internal relative imports Prisma sometimes misses
-    content = content.replace(/from\s+['"]\.\/(.*)['"]/g, "from './$1.js'");
-    fs.writeFileSync(prismaClientPath, content);
-    console.log('Fixed Prisma Client ESM imports');
-}
+const genPath = './src/generated/prisma/package.json';
+const distGenPath = './dist/generated/prisma/package.json';
+
+[genPath, distGenPath].forEach(p => {
+    const dir = path.dirname(p);
+    if (fs.existsSync(dir)) {
+        // IMPORTANT: Set to "commonjs"
+        fs.writeFileSync(p, JSON.stringify({ type: "commonjs" }, null, 2));
+        console.log(`✅ Set CommonJS mode in: ${dir}`);
+    }
+});
+
+console.log("🚀 Build prep complete.");

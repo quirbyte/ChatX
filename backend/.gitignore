@@ -1,7 +1,7 @@
 .env
 node_modules
 /src/generated/prisma
-
+dist
 prisma.config.d.ts
 prisma.config.d.ts.map
 prisma.config.js
