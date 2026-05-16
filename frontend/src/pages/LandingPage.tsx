@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 export default function LandingPage() {
+    const navigate = useNavigate();
     return (
         <div className="min-h-screen bg-zinc-950 text-white selection:bg-green-500/30 overflow-x-hidden">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-72 md:w-150 md:h-150 bg-green-500/10 blur-[80px] md:blur-[120px] -z-10 rounded-full" />
@@ -12,7 +15,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex gap-6 items-center">
                     <a href="/signin" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Sign In</a>
-                    <button className="bg-white text-black px-5 py-2 rounded-full font-bold text-sm hover:bg-zinc-200 transition-all">
+                    <button onClick={() => { navigate("/signup") }} className="bg-white text-black px-5 py-2 rounded-full font-bold text-sm hover:bg-zinc-200 transition-all">
                         Get Started
                     </button>
                 </div>
@@ -34,16 +37,18 @@ export default function LandingPage() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <button className="w-full sm:w-auto bg-green-600 hover:bg-green-500 text-white px-10 py-4 rounded-2xl font-bold transition-all shadow-[0_0_30px_rgba(22,163,74,0.3)] hover:scale-105 active:scale-95">
+                        <button onClick={()=>{navigate("/chat")}} className="w-full sm:w-auto bg-green-600 hover:bg-green-500 text-white px-10 py-4 rounded-2xl font-bold transition-all shadow-[0_0_30px_rgba(22,163,74,0.3)] hover:scale-105 active:scale-95">
                             Start Chatting Now
                         </button>
-                        <button className="w-full sm:w-auto border border-zinc-800 hover:bg-zinc-900 px-10 py-4 rounded-2xl font-bold transition-all">
+                        <button onClick={()=>{
+                            location.href="#Features"
+                        }} className="w-full sm:w-auto border border-zinc-800 hover:bg-zinc-900 px-10 py-4 rounded-2xl font-bold transition-all">
                             How it works
                         </button>
                     </div>
                 </section>
 
-                <section className="relative group px-2 md:px-0">
+                <section id="Features" className="relative group px-2 md:px-0">
                     <div className="absolute -inset-1 bg-linear-to-r from-green-500/20 to-emerald-500/20 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
                     <div className="relative bg-zinc-900 border border-zinc-800 rounded-2xl aspect-video overflow-hidden shadow-2xl">
                         <div className="w-full h-6 md:h-8 bg-zinc-800/50 border-b border-zinc-700 flex items-center gap-1.5 px-4">
