@@ -1,6 +1,8 @@
 import { useState } from "react"
 import axios from "axios";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 export default function JoinDialog({ handleClose, refreshData }: { handleClose: () => void, refreshData: () => void }) {
     const [loading, setLoading] = useState(false);
     const [roomcode, setRoomcode] = useState("");
@@ -21,7 +23,7 @@ export default function JoinDialog({ handleClose, refreshData }: { handleClose: 
         }
         setLoading(true);
         try {
-            await axios.put("http://localhost:3000/room/join",
+            await axios.put(`${BACKEND_URL}/room/join`,
                 {
                     code: roomcode,
                     password

@@ -12,6 +12,9 @@ interface ChatAreaProps {
     refreshData: () => void;
 }
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const WS_URL = import.meta.env.VITE_WS_URL;
+
 export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: ChatAreaProps) {
     const [loading, setLoading] = useState(false);
     const [copyToast, setCopyToast] = useState(false);
@@ -29,14 +32,14 @@ export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: 
 
         const fetchHistory = async () => {
             if (!activeRoom) return;
-            const res = await axios.get(`http://localhost:3000/room/${activeRoom.id}/messages`, {
+            const res = await axios.get(`${BACKEND_URL}/room/${activeRoom.id}/messages`, {
                 headers: { authorization: localStorage.getItem("chatx_token") }
             });
             setMessages(res.data);
         };
 
         fetchHistory();
-        const ws = new WebSocket("ws://localhost:3000");
+        const ws = new WebSocket(`${WS_URL}`);
         socketRef.current = ws;
 
         ws.onopen = () => {
@@ -63,7 +66,7 @@ export default function ChatArea({ activeRoom, handleActiveRoom, refreshData }: 
     const handleLeaveRoom = async () => {
         setLoading(true);
         try {
-            await axios.delete("http://localhost:3000/room/leave", {
+            await axios.delete(`${BACKEND_URL}/room/leave`, {
                 headers: {
                     authorization: localStorage.getItem("chatx_token")
                 },

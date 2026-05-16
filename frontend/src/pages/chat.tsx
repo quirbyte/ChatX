@@ -7,6 +7,8 @@ import CreateDialog from "../components/createDialog";
 import ChatArea from "../components/ChatArea";
 import axios from "axios";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 export interface RoomInterface {
     id: string;
     name: string;
@@ -23,7 +25,7 @@ export default function ChatPage() {
 
     const getRooms = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/room/", {
+            const response = await axios.get(`${BACKEND_URL}/room/`, {
                 headers: { authorization: localStorage.getItem("chatx_token") }
             });
             setRooms(response.data.userRooms);

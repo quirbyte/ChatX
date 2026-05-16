@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import QrCard from "../../components/QrLoginCard";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function SignupPage() {
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ export default function SignupPage() {
         setErrorMsg("");
         setUsernameError(false);
         try {
-            const response = await axios.post("http://localhost:3000/auth/signup", { username, email });
+            const response = await axios.post(`${BACKEND_URL}/auth/signup`, { username, email });
             setQrcode(response.data.qrCode);
             setIsVerified(true);
             setDialogOpen(true);
@@ -44,7 +45,7 @@ export default function SignupPage() {
         setLoading(true);
         setOtpError(false);
         try {
-            const response = await axios.post("http://localhost:3000/auth/verify", { email, token: otp });
+            const response = await axios.post(`${BACKEND_URL}/auth/verify`, { email, token: otp });
             if (response.data.token) {
                 localStorage.setItem("chatx_token", response.data.token);
                 localStorage.setItem("chatx_user", JSON.stringify(response.data.user));

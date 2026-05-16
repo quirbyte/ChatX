@@ -1,5 +1,7 @@
 import axios from "axios";
-import { useState } from "react"
+import { useState } from "react";
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function CreateDialog({ handleClose,refreshData }: { handleClose: () => void,refreshData:()=>void }) {
     const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ export default function CreateDialog({ handleClose,refreshData }: { handleClose:
         }
         setLoading(true);
         try {
-            await axios.post("http://localhost:3000/room/create",
+            await axios.post(`${BACKEND_URL}/room/create`,
                 {
                     name: roomname,
                     password: password
