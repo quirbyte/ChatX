@@ -9,7 +9,10 @@ const app=express();
 const httpServer = createServer(app);
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: [
+        "http://localhost:5173", 
+        process.env.FRONTEND_URL || "" 
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
